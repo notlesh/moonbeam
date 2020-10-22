@@ -58,10 +58,10 @@ sp-block-builder = { git = "https://github.com/paritytech/substrate.git", branch
 
 moonbeam-runtime = {path = "../../runtime", default-features = false, features = ["std", "standalone"] }
 
-ethereum = { package = "pallet-ethereum", git = "https://github.com/purestake/frontier", branch = "v0.2-hotfixes" }
-frontier-consensus = { git = "https://github.com/purestake/frontier", branch = "v0.2-hotfixes" }
-frontier-rpc = { git = "https://github.com/purestake/frontier", branch = "v0.2-hotfixes" }
-frontier-rpc-primitives = { git = "https://github.com/purestake/frontier", branch = "v0.2-hotfixes" }
+ethereum = { package = "pallet-ethereum", git = "https://github.com/purestake/frontier", branch = "joshy-fix-get-block" }
+frontier-consensus = { git = "https://github.com/purestake/frontier", branch = "joshy-fix-get-block" }
+frontier-rpc = { git = "https://github.com/purestake/frontier", branch = "joshy-fix-get-block" }
+frontier-rpc-primitives = { git = "https://github.com/purestake/frontier", branch = "joshy-fix-get-block" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "rococo-branch" }

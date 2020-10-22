@@ -1674,7 +1674,7 @@ dependencies = [
 [[package]]
 name = "frontier-consensus"
 version = "0.1.0"
-source = "git+https://github.com/purestake/frontier?branch=v0.2-hotfixes#10fad78914af371e9f46e7836e5742b94feeda16"
+source = "git+https://github.com/purestake/frontier?branch=joshy-fix-get-block#10fad78914af371e9f46e7836e5742b94feeda16"
 dependencies = [
  "derive_more",
  "ethereum 0.3.3",
@@ -1699,7 +1699,7 @@ dependencies = [
 [[package]]
 name = "frontier-consensus-primitives"
 version = "0.1.0"
-source = "git+https://github.com/purestake/frontier?branch=v0.2-hotfixes#10fad78914af371e9f46e7836e5742b94feeda16"
+source = "git+https://github.com/purestake/frontier?branch=joshy-fix-get-block#10fad78914af371e9f46e7836e5742b94feeda16"
 dependencies = [
  "parity-scale-codec",
  "sp-core",
@@ -1710,7 +1710,7 @@ dependencies = [
 [[package]]
 name = "frontier-rpc"
 version = "0.1.0"
-source = "git+https://github.com/purestake/frontier?branch=v0.2-hotfixes#10fad78914af371e9f46e7836e5742b94feeda16"
+source = "git+https://github.com/purestake/frontier?branch=joshy-fix-get-block#10fad78914af371e9f46e7836e5742b94feeda16"
 dependencies = [
  "ethereum 0.3.3",
  "ethereum-types",
@@ -1743,7 +1743,7 @@ dependencies = [
 [[package]]
 name = "frontier-rpc-core"
 version = "0.1.0"
-source = "git+https://github.com/purestake/frontier?branch=v0.2-hotfixes#10fad78914af371e9f46e7836e5742b94feeda16"
+source = "git+https://github.com/purestake/frontier?branch=joshy-fix-get-block#10fad78914af371e9f46e7836e5742b94feeda16"
 dependencies = [
  "ethereum-types",
  "jsonrpc-core",
@@ -1758,7 +1758,7 @@ dependencies = [
 [[package]]
 name = "frontier-rpc-primitives"
 version = "0.1.0"
-source = "git+https://github.com/purestake/frontier?branch=v0.2-hotfixes#10fad78914af371e9f46e7836e5742b94feeda16"
+source = "git+https://github.com/purestake/frontier?branch=joshy-fix-get-block#10fad78914af371e9f46e7836e5742b94feeda16"
 dependencies = [
  "ethereum 0.3.3",
  "ethereum-types",
@@ -3475,7 +3475,7 @@ dependencies = [
  "jsonrpc-pubsub",
  "log 0.4.11",
  "moonbeam-runtime",
- "pallet-ethereum 0.1.0 (git+https://github.com/purestake/frontier?branch=v0.2-hotfixes)",
+ "pallet-ethereum 0.1.0 (git+https://github.com/purestake/frontier?branch=joshy-fix-get-block)",
  "pallet-evm",
  "pallet-transaction-payment-rpc",
  "sc-basic-authorship",
@@ -3527,7 +3527,7 @@ dependencies = [
  "log 0.4.11",
  "pallet-aura",
  "pallet-balances",
- "pallet-ethereum 0.1.0 (git+https://github.com/purestake/frontier?branch=v0.2-hotfixes)",
+ "pallet-ethereum 0.1.0 (git+https://github.com/purestake/frontier?branch=joshy-fix-get-block)",
  "pallet-evm",
  "pallet-grandpa",
  "pallet-randomness-collective-flip",
@@ -3987,7 +3987,7 @@ checksum = "bd4556fb64842e71bb6e2f98b7541c0d310069eb607d432c6ac9bdaecbfd3118"
 [[package]]
 name = "pallet-ethereum"
 version = "0.1.0"
-source = "git+https://github.com/purestake/frontier?branch=v0.2-hotfixes#10fad78914af371e9f46e7836e5742b94feeda16"
+source = "git+https://github.com/purestake/frontier?branch=joshy-fix-get-block#10fad78914af371e9f46e7836e5742b94feeda16"
 dependencies = [
  "ethereum 0.3.3",
  "ethereum-types",

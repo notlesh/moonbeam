@@ -13,10 +13,13 @@ describeWithMoonbeam("Moonbeam RPC (Block)", `simple-specs.json`, (context) => {
 		expect(await context.web3.eth.getBlockNumber()).to.equal(0);
 	});
 
-	it.skip("should return genesis block", async function () {
+	it("should return genesis block", async function () {
+		console.log("a")
+		console.log(await context.web3.eth.getBlockNumber())
 		expect(await context.web3.eth.getBlockNumber()).to.equal(0);
-
+		console.log("b")
 		const block = await context.web3.eth.getBlock(0);
+		console.log(block)
 		expect(block).to.include({
 			author: "0x0000000000000000000000000000001234567890",
 			difficulty: "0",

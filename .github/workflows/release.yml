@@ -1,6 +1,6 @@
 name: Release
 
-on: ["push"]
+on: ["push", "pull_request_target"]
 
 jobs:
   get-variables:
@@ -120,7 +120,9 @@ jobs:
   docker-parachain:
     runs-on: ubuntu-latest
     needs: ["get-variables", "build", "generate-parachain-specs"]
-    if: needs.get-variables.outputs.tag-exists == 0 && github.event_name != 'pull_request'
+    if: needs.get-variables.outputs.tag-exists == 0 && 
+      github.event_name != 'pull_request' &&
+      github.event_name != 'pull_request_target'  
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -175,7 +177,9 @@ jobs:
           context: .
           file: ./docker/moonbase-alphanet.Dockerfile
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{
+            github.event_name != 'pull_request' &&
+            github.event_name != 'pull_request_target'}}
           tags: ${{ steps.prep.outputs.tags }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
@@ -190,7 +194,9 @@ jobs:
   docker-standalone:
     runs-on: ubuntu-latest
     needs: ["get-variables", "build"]
-    if: needs.get-variables.outputs.tag-exists == 0 && github.event_name != 'pull_request'
+    if: needs.get-variables.outputs.tag-exists == 0 && 
+      github.event_name != 'pull_request' &&
+      github.event_name != 'pull_request_target'  
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -245,7 +251,9 @@ jobs:
           context: .
           file: ./docker/moonbase-standalone.Dockerfile
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{
+            github.event_name != 'pull_request' &&
+            github.event_name != 'pull_request_target'}}
           tags: ${{ steps.prep.outputs.tags }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}

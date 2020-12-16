@@ -123,7 +123,7 @@ jobs:
           default: true
 
       - name: Check with Clippy
-        run: cargo clippy --tests -- -D warnings
+        run: cargo clippy --workspace --tests -- -D warnings
 
   ####### Building and Testing binaries #######
 

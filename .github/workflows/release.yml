@@ -98,8 +98,8 @@ jobs:
       - name: Check with Prettier
         run: npx prettier --check --ignore-path .gitignore  '**/*.(yml|js|ts|json)'
 
-  check-clippy:
-    name: "Check with Clippy"
+  check-rustfmt:
+    name: "Check with rustfmt"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -113,8 +113,8 @@ jobs:
         if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v2
 
-      - name: Check with Clippy
-        run: cargo clippy --tests -- -D warnings
+      - name: Check with rustfmt
+        run: cargo fmt
 
   ####### Building and Testing binaries #######
 

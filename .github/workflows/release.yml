@@ -100,10 +100,10 @@ jobs:
 
   check-clippy:
     name: "Check with Clippy"
-    uses: actions/checkout@v2
     steps:
       - name: Checkout
         if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v2
         with:
           components: clippy
       - name: Check with Clippy

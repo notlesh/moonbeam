@@ -95,6 +95,14 @@ jobs:
       - name: Checkout
         if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v2
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly-2020-12-15
+          components: rustfmt, clippy
+          target: wasm32-unknown-unknown
+          default: true
       - name: Check with Prettier
         run: npx prettier --check --ignore-path .gitignore  '**/*.(yml|js|ts|json)'
 

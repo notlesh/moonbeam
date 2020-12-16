@@ -98,6 +98,17 @@ jobs:
       - name: Check with Prettier
         run: npx prettier --check --ignore-path .gitignore  '**/*.(yml|js|ts|json)'
 
+  check-clippy:
+    name: "Check with Clippy"
+    uses: actions/checkout@v2
+    steps:
+      - name: Checkout
+        if: github.event_name == 'pull_request_target'
+        with:
+          components: clippy
+      - name: Check with Clippy
+        run: cargo clippy --tests -- -D warnings
+
   ####### Building and Testing binaries #######
 
   build:

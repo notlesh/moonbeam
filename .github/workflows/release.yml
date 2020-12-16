@@ -108,17 +108,11 @@ jobs:
         with:
           fetch-depth: 0
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+        run: rustup component add clippy
       - name: Checkout
         if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v2
-      - name: Install toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          components: rustfmt, clippy
-          target: wasm32-unknown-unknown
-          default: true
+        run: rustup component add clippy
       - name: Check with Clippy
         run: cargo clippy --tests -- -D warnings
 

@@ -114,7 +114,6 @@ jobs:
       - name: Checkout
         if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v2
-        run: rustup component add clippy
 
       - name: Check with Clippy
         run: cargo clippy --tests -- -D warnings

@@ -102,17 +102,20 @@ jobs:
     name: "Check with Clippy"
     runs-on: ubuntu-latest
     steps:
+      - run: rustup component add clippy
+
       - name: Checkout
         if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
-        run: rustup component add clippy
+
       - name: Checkout
         if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v2
         run: rustup component add clippy
+
       - name: Check with Clippy
         run: cargo clippy --tests -- -D warnings
 

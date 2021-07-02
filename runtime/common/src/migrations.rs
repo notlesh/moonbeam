@@ -19,7 +19,12 @@
 use frame_support::{pallet_prelude::Get, weights::Weight};
 use pallet_migrations::Migration;
 use sp_runtime::Perbill;
-use sp_std::prelude::*;
+use sp_std::{
+	marker::PhantomData,
+	prelude::*,
+};
+
+use parachain_staking::Call;
 
 /// This module acts as a registry where each migration is defined. Each migration should implement
 /// the "Migration" trait declared in the pallet-migrations crate.
@@ -49,25 +54,33 @@ impl Migration for MM_002_StakingFixTotalBalance {
 }
 
 #[allow(non_camel_case_types)]
-pub struct MM_003_StakingUnboundedCollatorNominations;
-impl Migration for MM_003_StakingUnboundedCollatorNominations {
+pub struct MM_003_StakingUnboundedCollatorNominations<Runtime>(PhantomData<Runtime>);
+impl<Runtime> Migration for MM_003_StakingUnboundedCollatorNominations<Runtime>
+where
+	Runtime: parachain_staking::Config
+{
 	fn friendly_name(&self) -> &str {
 		"StakingUnboundedCollatorNominations"
 	}
 	fn step(&self, _previous_progress: Perbill, _available_weight: Weight) -> (Perbill, Weight) {
+		parachain_staking::Call::<Runtime>::go_offline();
 		(Perbill::one(), 0u64.into())
 	}
 }
 
-pub struct CommonMigrations;
-impl Get<Vec<Box<dyn Migration>>> for CommonMigrations {
+pub struct CommonMigrations<Runtime>(PhantomData<Runtime>);
+impl<Runtime> Get<Vec<Box<dyn Migration>>> for CommonMigrations<Runtime>
+where
+	Runtime: parachain_staking::Config
+{
 	fn get() -> Vec<Box<dyn Migration>> {
+		let test = MM_003_StakingUnboundedCollatorNominations::<Runtime> {0: Default::default()};
 		// TODO: this is a lot of allocation to do upon every get() call. this *should* be avoided
 		// except when pallet_migrations undergoes a runtime upgrade -- but TODO: review
 		vec![
 			Box::new(MM_001_AuthorMappingAddDeposit),
 			Box::new(MM_002_StakingFixTotalBalance),
-			Box::new(MM_003_StakingUnboundedCollatorNominations),
+			Box::new(test),
 		]
 	}
 }

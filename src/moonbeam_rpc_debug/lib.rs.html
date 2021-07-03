@@ -250,7 +250,7 @@
 <span id="247">247</span>
 <span id="248">248</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="comment">// Copyright 2019-2020 PureStake Inc.</span>
+<span class="comment">// Copyright 2019-2021 PureStake Inc.</span>
 <span class="comment">// This file is part of Moonbeam.</span>
 
 <span class="comment">// Moonbeam is free software: you can redistribute it and/or modify</span>
@@ -495,8 +495,9 @@
 					.<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">internal_err</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;DispatchError: {:?}&quot;</span>, <span class="ident">e</span>)));
 			}
 		}
-		<span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">internal_err</span>(<span class="string">&quot;Runtime block call failed&quot;</span>.<span class="ident">to_string</span>()));
+		<span class="prelude-val">Err</span>(<span class="ident">internal_err</span>(<span class="string">&quot;Runtime block call failed&quot;</span>.<span class="ident">to_string</span>()))
 	}
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "moonbeam_rpc_debug";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="moonbeam_rpc_debug"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

@@ -29,6 +29,10 @@ use sp_runtime::Perbill;
 
 pub use pallet::*;
 
+// TODO: compile error if this is in mock.rs:
+// "an `extern crate` loading macros must be at the crate root"
+#[macro_use] extern crate environmental;
+
 /// A Migration that must happen on-chain upon a runtime-upgrade
 pub trait Migration {
 	/// A human-readable name for this migration. Also used as storage key.
@@ -76,6 +80,7 @@ pub mod pallet {
 	pub enum Event<T: Config> {
 		// e.g. runtime upgrade started, completed, etc.
 		RuntimeUpgradeStarted(),
+		RuntimeUpgradeStepped(),
 		RuntimeUpgradeCompleted(),
 		MigrationStarted(Vec<u8>),
 		MigrationProgress(Vec<u8>, Perbill),
@@ -102,6 +107,22 @@ pub mod pallet {
 			weight += process_runtime_upgrades::<T>();
 
 			weight.into()
+		}
+
+		/// on_initialize implementation. Calls process_runtime_upgrades() if we are still in the
+		/// middle of a runtime upgrade.
+		/// TODO: use on_idle or some other hook?
+		fn on_initialize(_: T::BlockNumber) -> Weight {
+
+			// TODO: should account for the minimum one DB read
+			let mut weight: Weight = 0u64.into();
+
+			if ! <FullyUpgraded<T>>::get() {
+				Self::deposit_event(Event::RuntimeUpgradeStepped());
+				weight += process_runtime_upgrades::<T>();
+			}
+
+			weight
 		}
 	}
 

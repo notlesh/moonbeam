@@ -6265,10 +6265,10 @@ dependencies = [
 name = "pallet-migrations"
 version = "0.1.0"
 dependencies = [
+ "environmental",
  "frame-support",
  "frame-system",
  "log",
- "once_cell 1.8.0",
  "parity-scale-codec",
  "sp-core",
  "sp-io",

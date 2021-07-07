@@ -17,8 +17,6 @@
 //! A minimal runtime including the migrations pallet
 use super::*;
 use crate as pallet_migrations;
-use std::sync::{Arc, Mutex};
-use once_cell::sync::Lazy;
 use frame_support::{
 	construct_runtime, pallet_prelude::*, parameter_types, traits::GenesisBuild, weights::Weight,
 };
@@ -80,43 +78,106 @@ impl frame_system::Config for Test {
 	type OnSetCode = ();
 }
 
-type MigrationStepFn = fn (Perbill, Weight) -> (Perbill, Weight);
+#[derive(Default)]
+pub struct MockMigrationManager<'test> {
+	name_fn_callbacks: Vec<Box<dyn 'test + FnMut() -> &'static str>>,
+	step_fn_callbacks: Vec<Box<dyn 'test + FnMut(Perbill, Weight) -> (Perbill, Weight)>>,
+}
+
+impl<'test> MockMigrationManager<'test> {
+	pub fn registerCallback<FN, FS>(&mut self, name_fn: FN, step_fn: FS)
+	where
+		FN: 'test + FnMut() -> &'static str,
+		FS: 'test + FnMut(Perbill, Weight) -> (Perbill, Weight),
+	{
+		self.name_fn_callbacks.push(Box::new(name_fn));
+		self.step_fn_callbacks.push(Box::new(step_fn));
+	}
+
+	pub(crate) fn invoke_name_fn(&mut self, index: usize) -> &'static str {
+		self.name_fn_callbacks[index]()
+	}
+
+	pub(crate) fn invoke_step_fn(&mut self, index: usize, previous_progress: Perbill, available_weight: Weight)
+		-> (Perbill, Weight)
+	{
+		self.step_fn_callbacks[index](previous_progress, available_weight)
+	}
+
+	fn generate_migrations_list(&self) -> Vec<Box<dyn Migration>> {
+		let mut migrations: Vec<Box<dyn Migration>> = Vec::new();
+		for i in 0..self.name_fn_callbacks.len() {
+			migrations.push(Box::new(MockMigration{index: i}));
+		}
+		migrations
+	}
+}
+environmental!(MOCK_MIGRATIONS_LIST: MockMigrationManager<'static>);
+
+pub fn execute_with_mock_migrations<CB>(callback: &mut CB)
+where
+	CB: FnMut(&mut MockMigrationManager)
+{
+	let mut original_mgr: MockMigrationManager = Default::default();
+	MOCK_MIGRATIONS_LIST::using(&mut original_mgr, || {
+		MOCK_MIGRATIONS_LIST::with(|inner_mgr: &mut MockMigrationManager| {
+			callback(inner_mgr);
+		});
+
+		// mimic the calls that would occur from the time a runtime upgrade starts until the
+		// Migrations pallet indicates that all upgrades are complete
+
+		ExtBuilder::default().build().execute_with(|| {
+			let mut block_number = 1u64;
+			Migrations::on_runtime_upgrade();
+
+			while ! Migrations::is_fully_upgraded() {
+				System::set_block_number(block_number);
+				System::on_initialize(System::block_number());
+				Migrations::on_initialize(System::block_number());
+				Migrations::on_finalize(System::block_number());
+				System::on_finalize(System::block_number());
+
+				block_number += 1;
+
+				if block_number > 99999 {
+					panic!("Infinite loop?");
+				}
+			}
+		});
+	});
+}
 
 #[derive(Clone)]
 pub struct MockMigration {
-	pub name: String,
-	pub callback: MigrationStepFn,
+	pub index: usize,
 }
 
 impl Migration for MockMigration {
 	fn friendly_name(&self) -> &str {
-		&self.name[..]
+		let mut result: &str = "";
+		MOCK_MIGRATIONS_LIST::with(|mgr: &mut MockMigrationManager| {
+			result = mgr.invoke_name_fn(self.index);
+		});
+		result
 	}
 	fn step(&self, previous_progress: Perbill, available_weight: Weight) -> (Perbill, Weight) {
-		let f = self.callback;
-		f(previous_progress, available_weight)
+		let mut result: (Perbill, Weight) = (Perbill::zero(), 0u64.into());
+		MOCK_MIGRATIONS_LIST::with(|mgr: &mut MockMigrationManager| {
+			result = mgr.invoke_step_fn(self.index, previous_progress, available_weight);
+		});
+		result
 	}
-}
-
-pub static MOCK_MIGRATIONS_LIST: Lazy<Mutex<Vec<MockMigration>>> = Lazy::new(|| {
-	Mutex::new(vec![])
-});
-pub fn replace_mock_migrations_list(new_vec: &mut Vec<MockMigration>) {
-	let mut list = MOCK_MIGRATIONS_LIST.lock().unwrap();
-	list.clear();
-	list.append(new_vec);
 }
 
 pub struct MockMigrations;
 impl Get<Vec<Box<dyn Migration>>> for MockMigrations {
 	fn get() -> Vec<Box<dyn Migration>> {
-
-		let mut migrations_list: Vec<Box<dyn Migration>> = Vec::new();
-		for mock in &*MOCK_MIGRATIONS_LIST.lock().unwrap() {
-			migrations_list.push(Box::new(mock.clone()));
-		}
-
-		migrations_list
+		let mut migrations: Vec<Box<dyn Migration>> = Vec::new();
+		MOCK_MIGRATIONS_LIST::with(|mgr: &mut MockMigrationManager| {
+			migrations = mgr.generate_migrations_list();
+		});
+		migrations
 	}
 }
 
